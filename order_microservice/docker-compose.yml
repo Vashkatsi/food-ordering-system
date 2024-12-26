@@ -1,0 +1,40 @@
+services:
+  order_service:
+    build: .
+    container_name: order_service
+    ports:
+      - "8000:8000"
+    volumes:
+      - .:/app
+    depends_on:
+      - order_db
+      - zookeeper
+      - kafka
+
+  order_db:
+    image: postgres:14
+    container_name: order_db
+    environment:
+      POSTGRES_DB: order_db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "6432:5432"
+
+  zookeeper:
+    image: confluentinc/cp-zookeeper
+    container_name: zookeeper
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+
+  kafka:
+    image: confluentinc/cp-kafka
+    container_name: kafka
+    depends_on:
+      - zookeeper
+    environment:
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+    ports:
+      - "9092:9092"
