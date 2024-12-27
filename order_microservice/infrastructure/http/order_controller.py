@@ -1,7 +1,8 @@
-from configs import PlaceOrderUseCaseDep
-from domain.models.order_item import OrderItem
 from fastapi import APIRouter
 from pydantic import BaseModel
+
+from configs import PlaceOrderUseCaseDep
+from domain.models.order_item import OrderItem
 
 order_router = APIRouter()
 

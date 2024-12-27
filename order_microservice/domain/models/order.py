@@ -14,5 +14,8 @@ class Order:
     def mark_as_canceled(self):
         self.status = "CANCELED"
 
+    def mark_as_failed(self):
+        self.status = "FAILED"
+
     def get_total_price(self):
         return self.total_price

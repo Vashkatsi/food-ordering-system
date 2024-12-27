@@ -8,8 +8,15 @@ services:
       - .:/app
     depends_on:
       - order_db
+      - migrations
       - zookeeper
       - kafka
+
+  migrations:
+    build: .
+    command: alembic upgrade head
+    depends_on:
+      - order_db
 
   order_db:
     image: postgres:14
@@ -42,3 +49,21 @@ services:
     ports:
       - "9092:9092"
       - "9093:9093"
+
+  order_outbox_processor:
+    build: .
+    container_name: order_outbox_processor
+    command: python run_outbox_processor.py
+    depends_on:
+      - order_db
+      - zookeeper
+      - kafka
+
+  order_payment_consumer:
+    build: .
+    container_name: order_payment_consumer
+    command: python run_payment_consumer.py
+    depends_on:
+      - order_db
+      - zookeeper
+      - kafka
